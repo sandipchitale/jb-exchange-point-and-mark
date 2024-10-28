@@ -26,7 +26,7 @@
     <extensions defaultExtensionNs="com.intellij">
     </extensions>
     <actions>
-        <action id="sandipchitale.CopyWithLineNumbersAction"
+        <action id="ExchangeStartAndEndOfSelectionAction"
                 class="sandipchitale.jbexchangepointandmark.ExchangeStartAndEndOfSelectionAction"
                 text="Exchange Start and End of Selection"
                 description="Exchange Start and End of Selection. Works with multiple selections as well">
