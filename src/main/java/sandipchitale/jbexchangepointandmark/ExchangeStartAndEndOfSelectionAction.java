@@ -21,11 +21,13 @@ public class ExchangeStartAndEndOfSelectionAction extends AnAction {
             carets.forEach((Caret caret) -> {
                 int selectionStart = caret.getSelectionStart();
                 int selectionEnd = caret.getSelectionEnd();
-                // Swap
-                if (caret.getOffset() == selectionStart) {
-                    caret.moveToOffset(selectionEnd);
-                } else {
-                    caret.moveToOffset(selectionStart);
+                if (selectionStart != selectionEnd) {
+                    // Swap
+                    if (caret.getOffset() == selectionStart) {
+                        caret.moveToOffset(selectionEnd);
+                    } else {
+                        caret.moveToOffset(selectionStart);
+                    }
                 }
             });
         }
