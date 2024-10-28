@@ -1,26 +1,23 @@
 package sandipchitale.jbexchangepointandmark;
 
-import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.editor.*;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.editor.Caret;
+import com.intellij.openapi.editor.CaretModel;
+import com.intellij.openapi.editor.Editor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ExchangeStartAndEndOfSelectionAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        DataContext dataContext = e.getDataContext();
-        Editor editor = CommonDataKeys.EDITOR.getData(dataContext);
+        Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
         if (editor != null) {
             CaretModel caretModel = editor.getCaretModel();
-            SelectionModel selectionModel = editor.getSelectionModel();
             List<Caret> carets = caretModel.getAllCarets();
-            Map<Caret, Integer> newSelectionStarts = new LinkedHashMap<>();
-            Map<Caret, Integer> newSelectionEnds = new LinkedHashMap<>();
-            List<CaretState> caretStates = new ArrayList<>();
             carets.forEach((Caret caret) -> {
                 int selectionStart = caret.getSelectionStart();
                 int selectionEnd = caret.getSelectionEnd();
