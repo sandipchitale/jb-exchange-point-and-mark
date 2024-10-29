@@ -8,18 +8,37 @@
     <name>Exchange Selection Start and End</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor email="sandipchitale@gmail.com" url="https://github.com/sandipchitale/jb-exchange-point-and-mark">Exchange Start and End of Selection</vendor>
+    <vendor email="sandipchitale@gmail.com" url="https://github.com/sandipchitale/jb-exchange-point-and-mark">Exchange
+        Start and End of Selection(s)
+    </vendor>
 
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
     This implements Emacs style exchange mark and point i.e. swaps the start and end of the selection. Works for multiple selection mode as well.
+
+
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
+
+    <change-notes><![CDATA[
+<h2>New Features</h2>
+<ul>
+    <li>Support Surround selection with [prefix]|[suffix]. Must specify one or both. Escape | with \|. If | is absent input string is used as prefix.</li>
+</ul>
+<h2>Features</h2>
+<ul>
+    <li>Support Exchange Selection Start and End</li>
+</ul>
+<h2>Bug Fixes</h2>
+<ul>
+    <li>N/A</li>
+</ul>
+]]></change-notes>
 
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
@@ -31,6 +50,13 @@
                 text="Exchange Start and End of Selection"
                 description="Exchange Start and End of Selection. Works with multiple selections as well">
             <add-to-group group-id="EditSelectGroup" anchor="after" relative-to-action="CollapseSelection"/>
+        </action>
+        <action id="SurroundWithPrefixSuffixAction"
+                class="sandipchitale.jbexchangepointandmark.SurroundWithPrefixSuffixAction"
+                text="Surround with Prefix and Suffix"
+                description="Surround with prefix and/or suffix by specifying [prefix]|[suffix]. Have to specify one or both. Use \| to escape | char.">
+            <add-to-group group-id="EditSelectGroup" anchor="after"
+                          relative-to-action="ExchangeStartAndEndOfSelectionAction"/>
         </action>
     </actions>
 </idea-plugin>
