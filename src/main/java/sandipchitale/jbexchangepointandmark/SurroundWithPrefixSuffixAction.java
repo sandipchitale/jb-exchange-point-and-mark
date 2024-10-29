@@ -2,10 +2,7 @@ package sandipchitale.jbexchangepointandmark;
 
 import com.google.common.collect.Lists;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Caret;
 import com.intellij.openapi.editor.CaretModel;
@@ -19,8 +16,8 @@ import java.util.List;
 
 public class SurroundWithPrefixSuffixAction extends AnAction {
     @Override
-    public void actionPerformed(@NotNull AnActionEvent e) {
-        Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
+    public void actionPerformed(@NotNull AnActionEvent actionEvent) {
+        Editor editor = CommonDataKeys.EDITOR.getData(actionEvent.getDataContext());
         if (editor != null) {
             Document document = editor.getDocument();
             if (!document.isWritable()) {
@@ -39,31 +36,41 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
                     }
                     String finalPrefix = prefix;
                     String finalSuffix = suffix;
-
+                    int moveCaretBy = (finalPrefix == null ? 0 : finalPrefix.length());
                     WriteCommandAction.runWriteCommandAction(
                             editor.getProject(),
                             (Computable<String>) () -> {
                                 CaretModel caretModel = editor.getCaretModel();
                                 List<Caret> carets = caretModel.getAllCarets();
+                                boolean[] doNotCallExtraExchangeStartAndEndOfSelectionAction = { false };
                                 Lists.reverse(carets).forEach((Caret caret) -> {
                                     int selectionStart = caret.getSelectionStart();
                                     int selectionEnd = caret.getSelectionEnd();
-                                    if (selectionStart < selectionEnd) {
-                                        if (finalSuffix != null) {
-                                            document.insertString(selectionEnd, finalSuffix);
-                                        }
-                                        if (finalPrefix != null) {
-                                            document.insertString(selectionStart, finalPrefix);
-                                        }
-                                    } else {
-                                        if (finalSuffix != null) {
-                                            document.insertString(selectionStart, finalSuffix);
-                                        }
-                                        if (finalPrefix != null) {
-                                            document.insertString(selectionEnd, finalPrefix);
+
+                                    if (caret.getOffset() == selectionStart) {
+                                        if (!doNotCallExtraExchangeStartAndEndOfSelectionAction[0]) {
+                                            doNotCallExtraExchangeStartAndEndOfSelectionAction[0] = true;
                                         }
                                     }
+
+                                    int insertPrefixAt = selectionStart;
+                                    int insertSuffixAt = selectionEnd;
+                                    if (selectionStart > selectionEnd) {
+                                        insertPrefixAt = selectionEnd;
+                                        insertSuffixAt = selectionStart;
+                                    }
+                                    if (finalSuffix != null) {
+                                        document.insertString(insertSuffixAt, finalSuffix);
+                                    }
+                                    if (finalPrefix != null) {
+                                        document.insertString(insertPrefixAt, finalPrefix);
+                                    }
                                 });
+                                AnAction anAction = ActionManager.getInstance().getAction("ExchangeStartAndEndOfSelectionAction");
+                                anAction.actionPerformed(actionEvent);
+                                if (!doNotCallExtraExchangeStartAndEndOfSelectionAction[0]) {
+                                    anAction.actionPerformed(actionEvent);
+                                }
                                 return "";
                             }
                     );
