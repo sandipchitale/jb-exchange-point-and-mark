@@ -13,6 +13,10 @@ import com.intellij.openapi.util.Computable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class SurroundWithPrefixSuffixAction extends AnAction {
     @Override
@@ -36,14 +40,15 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
                     }
                     String finalPrefix = prefix;
                     String finalSuffix = suffix;
-                    int moveCaretBy = (finalPrefix == null ? 0 : finalPrefix.length());
                     WriteCommandAction.runWriteCommandAction(
                             editor.getProject(),
                             (Computable<String>) () -> {
                                 CaretModel caretModel = editor.getCaretModel();
                                 List<Caret> carets = caretModel.getAllCarets();
                                 boolean[] doNotCallExtraExchangeStartAndEndOfSelectionAction = { false };
-                                Lists.reverse(carets).forEach((Caret caret) -> {
+                                IntStream.range(0, carets.size()).forEach((int index) -> {
+                                    index = carets.size() - index - 1;
+                                    Caret caret = carets.get(index);
                                     int selectionStart = caret.getSelectionStart();
                                     int selectionEnd = caret.getSelectionEnd();
 
@@ -60,10 +65,10 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
                                         insertSuffixAt = selectionStart;
                                     }
                                     if (finalSuffix != null) {
-                                        document.insertString(insertSuffixAt, finalSuffix);
+                                        document.insertString(insertSuffixAt, process(finalSuffix, index));
                                     }
                                     if (finalPrefix != null) {
-                                        document.insertString(insertPrefixAt, finalPrefix);
+                                        document.insertString(insertPrefixAt, process(finalPrefix, index));
                                     }
                                 });
                                 AnAction anAction = ActionManager.getInstance().getAction("ExchangeStartAndEndOfSelectionAction");
@@ -88,5 +93,15 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
         return ActionUpdateThread.EDT;
+    }
+
+    private static final Pattern stepSpecsPattern = Pattern.compile("\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*\\)");
+    private static String process(String prefixOrSuffix, int index) {
+        Matcher matcher = stepSpecsPattern.matcher(prefixOrSuffix);
+        return matcher.replaceAll((MatchResult match) -> {
+            int start = Integer.parseInt(match.group(1));
+            int step = Integer.parseInt(match.group(2));
+            return String.valueOf(start + index*step);
+        });
     }
 }
