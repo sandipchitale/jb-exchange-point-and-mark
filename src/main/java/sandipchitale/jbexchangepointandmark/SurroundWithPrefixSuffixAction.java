@@ -1,6 +1,5 @@
 package sandipchitale.jbexchangepointandmark;
 
-import com.google.common.collect.Lists;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -27,7 +26,11 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
             if (!document.isWritable()) {
                 Messages.showErrorDialog("The document is not writable!", "Error");
             } else {
-                String prefixSuffix = Messages.showInputDialog(editor.getComponent(), "Specify [prefix]|[suffix]:", "[prefix]|[suffix]", AllIcons.Actions.ArrowExpand);
+                @SuppressWarnings("DialogTitleCapitalization")
+                String prefixSuffix = Messages.showInputDialog(editor.getComponent(),
+                        "Specify [prefix]|[suffix]:",
+                        "[prefix]|[suffix]",
+                        AllIcons.Actions.ArrowExpand);
                 if (prefixSuffix != null && !prefixSuffix.isEmpty() && !prefixSuffix.equals("|")) {
                     String[] prefixSuffixParts = prefixSuffix.split("\\|");
                     String prefix = null;
