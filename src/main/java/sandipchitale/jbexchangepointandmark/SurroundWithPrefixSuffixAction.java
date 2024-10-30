@@ -64,9 +64,9 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
                 builder.setPreferredFocusComponent(prefixTextField);
 
                 if (builder.show() == DialogWrapper.OK_EXIT_CODE) {
-                    String finalPrefix = prefixTextField.getText();
-                    String finalSuffix = suffixTextField.getText();
-                    if (finalPrefix.length() == 0 && finalSuffix.length() == 0) {
+                    String prefix = prefixTextField.getText();
+                    String suffix = suffixTextField.getText();
+                    if (prefix.length() == 0 && suffix.length() == 0) {
                         Messages.showErrorDialog("Prefix and suffix are both zero length!\nMust specify at least one with non-zero length.", "Error");
                         return;
                     }
@@ -94,11 +94,11 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
                                         insertPrefixAt = selectionEnd;
                                         insertSuffixAt = selectionStart;
                                     }
-                                    if (finalSuffix.length() != 0) {
-                                        document.insertString(insertSuffixAt, process(finalSuffix, index));
+                                    if (suffix.length() != 0) {
+                                        document.insertString(insertSuffixAt, process(suffix, index));
                                     }
-                                    if (finalPrefix.length() != 0) {
-                                        document.insertString(insertPrefixAt, process(finalPrefix, index));
+                                    if (prefix.length() != 0) {
+                                        document.insertString(insertPrefixAt, process(prefix, index));
                                     }
                                 });
                                 AnAction anAction = ActionManager.getInstance().getAction("ExchangeStartAndEndOfSelectionAction");
