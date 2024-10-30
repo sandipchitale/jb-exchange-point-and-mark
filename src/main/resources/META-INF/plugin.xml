@@ -34,7 +34,7 @@
 <h2>Features</h2>
 <ul>
     <li>Support Exchange Selection Start and End</li>
-    <li>Support Surround selection with [prefix]|[suffix]. Must specify one or both. Escape | with \|. If | is absent input string is used as prefix.</li>
+    <li>Support Surround selection with [prefix]|[suffix]. Must specify at least one.</li>
 </ul>
 <h2>Bug Fixes</h2>
 <ul>
