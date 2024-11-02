@@ -117,7 +117,7 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         Editor editor = CommonDataKeys.EDITOR.getData(e.getDataContext());
-        e.getPresentation().setEnabled(editor != null && editor.getSelectionModel().hasSelection(true));
+        e.getPresentation().setEnabled(editor != null && editor.getDocument().isWritable());
     }
 
     @Override
