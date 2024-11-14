@@ -101,10 +101,27 @@ public class SurroundWithPrefixSuffixAction extends AnAction {
                                         document.insertString(insertPrefixAt, process(prefix, index));
                                     }
                                 });
-                                AnAction anAction = ActionManager.getInstance().getAction("ExchangeStartAndEndOfSelectionAction");
-                                anAction.actionPerformed(actionEvent);
+                                ActionManager actionManager = ActionManager.getInstance();
+                                AnAction anAction = actionManager.getAction("ExchangeStartAndEndOfSelectionAction");
+
+                                actionManager.tryToExecute(
+                                        anAction,
+                                        null,
+                                        actionEvent.getDataContext().getData(PlatformDataKeys.CONTEXT_COMPONENT),
+                                        "editor",
+                                        true
+                                );
+
+                                // anAction.actionPerformed(actionEvent);
                                 if (!doNotCallExtraExchangeStartAndEndOfSelectionAction[0]) {
-                                    anAction.actionPerformed(actionEvent);
+                                    actionManager.tryToExecute(
+                                            anAction,
+                                            null,
+                                            actionEvent.getDataContext().getData(PlatformDataKeys.CONTEXT_COMPONENT),
+                                            "editor",
+                                            true
+                                    );
+                                    // anAction.actionPerformed(actionEvent);
                                 }
                                 return "";
                             }
